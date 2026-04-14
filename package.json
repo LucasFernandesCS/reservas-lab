@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "scripts": {
+    "start": "nodemon src/server.js",
     "dev": "next dev",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
@@ -27,6 +28,7 @@
   "homepage": "https://github.com/LucasFernandesCS/reservas-lab#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "next": "^16.2.3",
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {

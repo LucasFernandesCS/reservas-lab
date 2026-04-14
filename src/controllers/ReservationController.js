@@ -1,3 +1,4 @@
+const { deletar } = require("../models/ReservationModel");
 const ReservationService = require("../services/ReservationService");
 
 const ReservationController = {
@@ -37,6 +38,17 @@ const ReservationController = {
         reservaId,
         dadosRecebidos,
       );
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(400).json({ erro: error.message });
+    }
+  },
+
+  deletar: (req, res) => {
+    try {
+      const reservaId = Number(req.params.id);
+
+      const resultado = ReservationService.cancelarReserva(reservaId);
       res.status(200).json(resultado);
     } catch (error) {
       res.status(400).json({ erro: error.message });

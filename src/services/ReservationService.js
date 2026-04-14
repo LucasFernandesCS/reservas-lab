@@ -10,7 +10,7 @@ const ReservationService = {
     ReservationValidator.isHorarioComercial(dados);
     ReservationValidator.isDiaUtil(dados);
     ReservationValidator.isAlemDoTempoLimite(dados);
-    ReservationValidator.isConflitoEncontrado(reservasAtuais, dados);
+    ReservationValidator.validarConflito(reservasAtuais, dados);
 
     const reserva = ReservationModel.criarReserva(dados);
 
@@ -26,17 +26,15 @@ const ReservationService = {
 
   atualizarReservas: (reservaId, dados) => {
     const reservasAtuais = ReservationModel.listarReservas();
-    const index = reservasAtuais.findIndex((reservaAntiga) => {
-      return reservaId === reservaAntiga.reservaId;
-    });
+    const reservaAntiga = ReservationValidator.validarExistencia(
+      reservaId,
+      reservasAtuais,
+    );
 
-    if (index === -1) {
-      throw new Error("Reserva não encontrada");
-    }
+    const index = reservasAtuais.findIndex((r) => r.reservaId === reservaId);
 
-    const reservaOriginal = reservasAtuais[index];
     const reservaParaValidar = {
-      ...reservaOriginal,
+      ...reservaAntiga,
       ...dados,
     };
 
@@ -48,10 +46,7 @@ const ReservationService = {
     ReservationValidator.isHorarioComercial(reservaParaValidar);
     ReservationValidator.isDiaUtil(reservaParaValidar);
     ReservationValidator.isAlemDoTempoLimite(reservaParaValidar);
-    ReservationValidator.isConflitoEncontrado(
-      reservasAtuais,
-      reservaParaValidar,
-    );
+    ReservationValidator.validarConflito(reservasAtuais, reservaParaValidar);
 
     const reservaAtualizada = ReservationModel.atualizarReservas(
       index,
@@ -60,6 +55,19 @@ const ReservationService = {
 
     return {
       message: "Reserva atualizada com sucesso!",
+    };
+  },
+
+  cancelarReserva: (id) => {
+    const reservasAtuais = ReservationModel.listarReservas();
+
+    const reserva = ReservationValidator.validarExistencia(id, reservasAtuais);
+    ReservationValidator.validarPrazoCancelamento(reserva);
+
+    ReservationModel.deletar(id);
+
+    return {
+      message: "Reserva cancelada com sucesso!",
     };
   },
 };

@@ -1,4 +1,4 @@
-const bancoDeReservas = [];
+let bancoDeReservas = [];
 
 const ReservationModel = {
   criarReserva: (dados, reservasAtuais = bancoDeReservas) => {
@@ -20,6 +20,14 @@ const ReservationModel = {
     bancoDeReservas[index] = { ...bancoDeReservas[index], ...dados };
 
     return bancoDeReservas[index];
+  },
+
+  deletar: (id) => {
+    bancoDeReservas = bancoDeReservas.filter(
+      (reserva) => reserva.reservaId !== id,
+    );
+
+    return true;
   },
 };
 

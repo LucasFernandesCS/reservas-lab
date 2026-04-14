@@ -1,8 +1,10 @@
+const bancoDeReservas = [];
+
 const ReservationService = {
-  createReservation: (dados, reservasExistentes = []) => {
+  criarReserva: (dados, reservasAtuais = bancoDeReservas) => {
     const diasProibidos = [0, 6];
-    console.log("Valor recebido:", reservasExistentes);
-    const temConflito = reservasExistentes.some((reservaAntiga) => {
+
+    const temConflito = reservasAtuais.some((reservaAntiga) => {
       return (
         dados.dataInicio < reservaAntiga.dataFinal &&
         dados.dataFinal > reservaAntiga.dataInicio
@@ -42,10 +44,16 @@ const ReservationService = {
       throw new Error("A sala já está reservada neste horário");
     }
 
+    reservasAtuais.push(dados);
+
     return {
       message: "Reserva realizada com sucesso!",
       reserva: dados,
     };
+  },
+
+  listarTodas: () => {
+    return bancoDeReservas;
   },
 };
 

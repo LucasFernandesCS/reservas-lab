@@ -24,7 +24,7 @@ const ReservationValidator = {
     return true;
   },
 
-  isConflitoEncontrado: (reservasAtuais, reserva) => {
+  validarConflito: (reservasAtuais, reserva) => {
     const temConflito = reservasAtuais.some((reservaAntiga) => {
       return (
         reserva.reservaId !== reservaAntiga.reservaId &&
@@ -60,8 +60,36 @@ const ReservationValidator = {
   },
 
   isAlemDoTempoLimite: (reserva) => {
-    if ((reserva.dataFinal - reserva.dataInicio) / (1000 * 60 * 60) > 4) {
+    const diferencaEmMs = reserva.dataFinal - reserva.dataInicio;
+    const diferencaEmHoras = diferencaEmMs / (1000 * 60 * 60);
+    if (diferencaEmHoras > 4) {
       throw new Error("A reserva não pode durar mais do que 4 horas");
+    }
+
+    return true;
+  },
+
+  validarExistencia: (reservaId, reservasAtuais) => {
+    const reservaEncontrada = reservasAtuais.find(
+      (r) => r.reservaId === reservaId,
+    );
+
+    if (!reservaEncontrada) {
+      throw new Error("Reserva não encontrada");
+    }
+
+    return reservaEncontrada;
+  },
+
+  validarPrazoCancelamento: (reserva) => {
+    const agora = new Date();
+    const diferencaEmMs = reserva.dataInicio - agora;
+    const diferencaEmHoras = diferencaEmMs / (1000 * 60 * 60);
+
+    if (diferencaEmHoras < 24) {
+      throw new Error(
+        "Só é permitido cancelar com pelo menos 24 horas de antecedência",
+      );
     }
 
     return true;

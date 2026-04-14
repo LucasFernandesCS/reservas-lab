@@ -1,59 +1,66 @@
-const bancoDeReservas = [];
+const ReservationModel = require("../models/ReservationModel");
+const ReservationValidator = require("../validators/ReservationValidators");
 
 const ReservationService = {
-  criarReserva: (dados, reservasAtuais = bancoDeReservas) => {
-    const diasProibidos = [0, 6];
+  criarReserva: (dados) => {
+    const reservasAtuais = ReservationModel.listarReservas();
 
-    const temConflito = reservasAtuais.some((reservaAntiga) => {
-      return (
-        dados.dataInicio < reservaAntiga.dataFinal &&
-        dados.dataFinal > reservaAntiga.dataInicio
-      );
-    });
+    ReservationValidator.isReservaNoPassado(dados);
+    ReservationValidator.isDataFinalAntes(dados);
+    ReservationValidator.isHorarioComercial(dados);
+    ReservationValidator.isDiaUtil(dados);
+    ReservationValidator.isAlemDoTempoLimite(dados);
+    ReservationValidator.isConflitoEncontrado(reservasAtuais, dados);
 
-    if (dados.dataInicio < new Date()) {
-      throw new Error("A data de início não pode estar no passado");
-    }
-
-    if (dados.dataFinal < dados.dataInicio) {
-      throw new Error(
-        "O horário final da reserva não pode vir antes do horário inicial",
-      );
-    }
-
-    if (
-      dados.dataInicio.getHours() < 8 ||
-      dados.dataFinal.getHours() > 18 ||
-      (dados.dataFinal.getHours() === 18 && dados.dataFinal.getMinutes() > 0)
-    ) {
-      throw new Error("A reserva só pode ser feita em horário comercial");
-    }
-
-    if (
-      diasProibidos.includes(dados.dataInicio.getDay()) ||
-      diasProibidos.includes(dados.dataFinal.getDay())
-    ) {
-      throw new Error("A reserva não pode ser feita nos finais de semana");
-    }
-
-    if ((dados.dataFinal - dados.dataInicio) / (1000 * 60 * 60) > 4) {
-      throw new Error("A reserva não pode durar mais do que 4 horas");
-    }
-
-    if (temConflito) {
-      throw new Error("A sala já está reservada neste horário");
-    }
-
-    reservasAtuais.push(dados);
+    const reserva = ReservationModel.criarReserva(dados);
 
     return {
       message: "Reserva realizada com sucesso!",
-      reserva: dados,
     };
   },
 
-  listarTodas: () => {
-    return bancoDeReservas;
+  listarReservas: () => {
+    const reservas = ReservationModel.listarReservas();
+    return reservas;
+  },
+
+  atualizarReservas: (reservaId, dados) => {
+    const reservasAtuais = ReservationModel.listarReservas();
+    const index = reservasAtuais.findIndex((reservaAntiga) => {
+      return reservaId === reservaAntiga.reservaId;
+    });
+
+    if (index === -1) {
+      throw new Error("Reserva não encontrada");
+    }
+
+    const reservaOriginal = reservasAtuais[index];
+    const reservaParaValidar = {
+      ...reservaOriginal,
+      ...dados,
+    };
+
+    reservaParaValidar.dataInicio = new Date(reservaParaValidar.dataInicio);
+    reservaParaValidar.dataFinal = new Date(reservaParaValidar.dataFinal);
+
+    ReservationValidator.isReservaNoPassado(reservaParaValidar);
+    ReservationValidator.isDataFinalAntes(reservaParaValidar);
+    ReservationValidator.isHorarioComercial(reservaParaValidar);
+    ReservationValidator.isDiaUtil(reservaParaValidar);
+    ReservationValidator.isAlemDoTempoLimite(reservaParaValidar);
+    ReservationValidator.isConflitoEncontrado(
+      reservasAtuais,
+      reservaParaValidar,
+    );
+
+    const reservaAtualizada = ReservationModel.atualizarReservas(
+      index,
+      reservaParaValidar,
+    );
+
+    return {
+      message: "Reserva atualizada com sucesso!",
+    };
   },
 };
 

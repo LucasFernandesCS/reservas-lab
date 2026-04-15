@@ -1,31 +1,28 @@
-let bancoDeReservas = [];
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 const ReservationModel = {
-  criarReserva: (dados, reservasAtuais = bancoDeReservas) => {
-    const novaReserva = {
-      ...dados,
-      reservaId: Date.now(),
-    };
-
-    reservasAtuais.push(novaReserva);
-
+  criarReserva: async (dados) => {
+    const novaReserva = await prisma.reserva.create({ data: dados });
     return novaReserva;
   },
 
-  listarReservas: () => {
-    return bancoDeReservas;
+  listarReservas: async () => {
+    const reservas = await prisma.reserva.findMany();
+    return reservas;
   },
 
-  atualizarReservas: (index, dados) => {
-    bancoDeReservas[index] = { ...bancoDeReservas[index], ...dados };
+  atualizarReservas: async (id, dados) => {
+    const reserva = await prisma.reserva.update({
+      where: { reservaId: id },
+      data: dados,
+    });
 
-    return bancoDeReservas[index];
+    return reserva;
   },
 
-  deletar: (id) => {
-    bancoDeReservas = bancoDeReservas.filter(
-      (reserva) => reserva.reservaId !== id,
-    );
+  deletar: async (id) => {
+    const reserva = await prisma.reserva.delete({ where: { reservaId: id } });
 
     return true;
   },

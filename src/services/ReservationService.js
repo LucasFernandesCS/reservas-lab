@@ -2,8 +2,8 @@ const ReservationModel = require("../models/ReservationModel");
 const ReservationValidator = require("../validators/ReservationValidators");
 
 const ReservationService = {
-  criarReserva: (dados) => {
-    const reservasAtuais = ReservationModel.listarReservas();
+  criarReserva: async (dados) => {
+    const reservasAtuais = await ReservationModel.listarReservas();
 
     ReservationValidator.isReservaNoPassado(dados);
     ReservationValidator.isDataFinalAntes(dados);
@@ -12,26 +12,24 @@ const ReservationService = {
     ReservationValidator.isAlemDoTempoLimite(dados);
     ReservationValidator.validarConflito(reservasAtuais, dados);
 
-    const reserva = ReservationModel.criarReserva(dados);
+    const reserva = await ReservationModel.criarReserva(dados);
 
     return {
       message: "Reserva realizada com sucesso!",
     };
   },
 
-  listarReservas: () => {
-    const reservas = ReservationModel.listarReservas();
+  listarReservas: async () => {
+    const reservas = await ReservationModel.listarReservas();
     return reservas;
   },
 
-  atualizarReservas: (reservaId, dados) => {
-    const reservasAtuais = ReservationModel.listarReservas();
-    const reservaAntiga = ReservationValidator.validarExistencia(
+  atualizarReservas: async (reservaId, dados) => {
+    const reservasAtuais = await ReservationModel.listarReservas();
+    const reservaAntiga = await ReservationValidator.validarExistencia(
       reservaId,
       reservasAtuais,
     );
-
-    const index = reservasAtuais.findIndex((r) => r.reservaId === reservaId);
 
     const reservaParaValidar = {
       ...reservaAntiga,
@@ -48,8 +46,8 @@ const ReservationService = {
     ReservationValidator.isAlemDoTempoLimite(reservaParaValidar);
     ReservationValidator.validarConflito(reservasAtuais, reservaParaValidar);
 
-    const reservaAtualizada = ReservationModel.atualizarReservas(
-      index,
+    const reservaAtualizada = await ReservationModel.atualizarReservas(
+      reservaId,
       reservaParaValidar,
     );
 
@@ -58,13 +56,13 @@ const ReservationService = {
     };
   },
 
-  cancelarReserva: (id) => {
-    const reservasAtuais = ReservationModel.listarReservas();
+  cancelarReserva: async (id) => {
+    const reservasAtuais = await ReservationModel.listarReservas();
 
     const reserva = ReservationValidator.validarExistencia(id, reservasAtuais);
     ReservationValidator.validarPrazoCancelamento(reserva);
 
-    ReservationModel.deletar(id);
+    await ReservationModel.deletar(id);
 
     return {
       message: "Reserva cancelada com sucesso!",

@@ -2,16 +2,15 @@ const { deletar } = require("../models/ReservationModel");
 const ReservationService = require("../services/ReservationService");
 
 const ReservationController = {
-  criar: (req, res) => {
+  criar: async (req, res) => {
     try {
       const dadosRecebidos = {
         ...req.body,
         dataInicio: new Date(req.body.dataInicio),
         dataFinal: new Date(req.body.dataFinal),
-        reservaId: null,
       };
 
-      const resultado = ReservationService.criarReserva(dadosRecebidos);
+      const resultado = await ReservationService.criarReserva(dadosRecebidos);
 
       res.status(201).json(resultado);
     } catch (error) {
@@ -19,9 +18,9 @@ const ReservationController = {
     }
   },
 
-  listar: (req, res) => {
+  listar: async (req, res) => {
     try {
-      const resultado = ReservationService.listarReservas();
+      const resultado = await ReservationService.listarReservas();
 
       res.status(200).json(resultado);
     } catch (error) {
@@ -29,12 +28,12 @@ const ReservationController = {
     }
   },
 
-  atualizar: (req, res) => {
+  atualizar: async (req, res) => {
     try {
       const reservaId = Number(req.params.id);
       const dadosRecebidos = req.body;
 
-      const resultado = ReservationService.atualizarReservas(
+      const resultado = await ReservationService.atualizarReservas(
         reservaId,
         dadosRecebidos,
       );
@@ -44,11 +43,11 @@ const ReservationController = {
     }
   },
 
-  deletar: (req, res) => {
+  deletar: async (req, res) => {
     try {
       const reservaId = Number(req.params.id);
 
-      const resultado = ReservationService.cancelarReserva(reservaId);
+      const resultado = await ReservationService.cancelarReserva(reservaId);
       res.status(200).json(resultado);
     } catch (error) {
       res.status(400).json({ erro: error.message });

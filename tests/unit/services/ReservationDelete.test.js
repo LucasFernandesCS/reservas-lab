@@ -1,25 +1,40 @@
 jest.mock("../../../src/models/ReservationModel");
+jest.mock("@prisma/client", () => {
+  return {
+    PrismaClient: jest.fn().mockImplementation(() => ({
+      reserva: {
+        create: jest.fn(),
+        findMany: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+      },
+    })),
+  };
+});
 const ReservationModel = require("../../../src/models/ReservationModel");
 const ReservationService = require("../../../src/services/ReservationService");
 
 describe("ReservationService - Delete", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    ReservationModel.listarReservas.mockReturnValue([]);
+    ReservationModel.listarReservas.mockResolvedValue([]);
   });
 
   describe("Tratamento de Erros e Exceções", () => {
-    test("Deve lançar uma exceção ao tentar deletar um ID inexistente", () => {
-      ReservationModel.listarReservas.mockReturnValue([]);
+    test("Dada uma reserva inexistente, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      ReservationModel.listarReservas.mockResolvedValue([]);
 
       const idInexistente = 999;
 
-      expect(() => {
+      const tentativaDeCancelar =
         ReservationService.cancelarReserva(idInexistente);
-      }).toThrow("Reserva não encontrada");
+
+      await expect(tentativaDeCancelar).rejects.toThrow(
+        "Reserva não encontrada",
+      );
     });
 
-    test("Deve lançar uma exceção caso o usuário tente cancelar a reserva com menos de 24 horas", () => {
+    test("Dada uma reserva faltando menos de 24 horas para o seu início, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const reservasExistentes = [
         {
           reservaId: 1,
@@ -30,17 +45,17 @@ describe("ReservationService - Delete", () => {
         },
       ];
 
-      ReservationModel.listarReservas.mockReturnValue(reservasExistentes);
+      ReservationModel.listarReservas.mockResolvedValue(reservasExistentes);
 
-      expect(() => {
-        ReservationService.cancelarReserva(1);
-      }).toThrow(
+      const tentativaDeCancelar = ReservationService.cancelarReserva(1);
+
+      await expect(tentativaDeCancelar).rejects.toThrow(
         "Só é permitido cancelar com pelo menos 24 horas de antecedência",
       );
     });
   });
   describe("Fluxo de execução principal", () => {
-    test("Deve permitir cancelar uma reserva ao passar um ID válido", () => {
+    test("Dada uma reserva existente, Quando o usuário tentar cancelar a reserva, Então o sistema deve permitir o cancelamento", async () => {
       const reservasExistentes = [
         {
           reservaId: 1,
@@ -60,11 +75,14 @@ describe("ReservationService - Delete", () => {
 
       idParaDeletar = 2;
 
-      ReservationModel.listarReservas.mockReturnValue(reservasExistentes);
+      ReservationModel.listarReservas.mockResolvedValue(reservasExistentes);
 
-      const resultado = ReservationService.cancelarReserva(idParaDeletar);
+      const tentativaDeCancelar =
+        await ReservationService.cancelarReserva(idParaDeletar);
 
-      expect(resultado.message).toBe("Reserva cancelada com sucesso!");
+      expect(tentativaDeCancelar.message).toBe(
+        "Reserva cancelada com sucesso!",
+      );
       expect(ReservationModel.deletar).toHaveBeenCalledWith(idParaDeletar);
     });
   });

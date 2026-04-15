@@ -1,24 +1,19 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../config/database");
 
 const ReservationModel = {
   criarReserva: async (dados) => {
-    const novaReserva = await prisma.reserva.create({ data: dados });
-    return novaReserva;
+    return await prisma.reserva.create({ data: dados });
   },
 
   listarReservas: async () => {
-    const reservas = await prisma.reserva.findMany();
-    return reservas;
+    return await prisma.reserva.findMany();
   },
 
   atualizarReservas: async (id, dados) => {
-    const reserva = await prisma.reserva.update({
+    return await prisma.reserva.update({
       where: { reservaId: id },
       data: dados,
     });
-
-    return reserva;
   },
 
   deletar: async (id) => {

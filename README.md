@@ -4,6 +4,8 @@
 
 Uma API RESTful robusta para gerenciamento e agendamento de salas de reunião, construída com foco em qualidade de software, testes automatizados e regras de negócio estritas.
 
+🔗 **Link da API ao vivo:** [https://api-reservas-lab.onrender.com/reservas](https://api-reservas-lab.onrender.com/reservas)
+
 ## 🚀 Tecnologias Utilizadas
 
 - **Backend:** Node.js, Express.js
@@ -63,9 +65,20 @@ O projeto conta com uma suíte de testes robusta. Para executá-los:
 npm test
 ```
 
+## 📋 Exemplo de Uso (POST /reservas)
+
+```json
+{
+  "salaId": 1,
+  "usuario": "Lucas Fernandes",
+  "dataInicio": "2026-04-20T10:30:00",
+  "dataFinal": "2026-04-20T14:30:00"
+}
+```
+
 ## 🗺️ Próximos Passos (Roadmap)
 
 - [x] Testes de Integração e CI/CD.
-- [ ] Deploy na nuvem.
+- [x] Deploy na nuvem.
 - [ ] Autenticação e Autorização com JWT.
 - [ ] Frontend interativo.

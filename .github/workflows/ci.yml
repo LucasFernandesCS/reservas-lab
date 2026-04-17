@@ -32,11 +32,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
 
       - name: Instalar dependências
         run: npm ci
+
+      - name: Gerar o Prisma Client
+        run: npx prisma generate
 
       - name: Sincronizar o schema do Prisma com o banco
         env:

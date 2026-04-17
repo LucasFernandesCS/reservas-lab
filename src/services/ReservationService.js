@@ -16,6 +16,7 @@ const ReservationService = {
 
     return {
       message: "Reserva realizada com sucesso!",
+      reserva: reserva,
     };
   },
 

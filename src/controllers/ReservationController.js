@@ -1,4 +1,3 @@
-const { deletar } = require("../models/ReservationModel");
 const ReservationService = require("../services/ReservationService");
 
 const ReservationController = {

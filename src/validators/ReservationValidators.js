@@ -4,7 +4,13 @@ const ReservationValidator = {
     const fim = reserva.dataFinal.getHours();
     const minutoFim = reserva.dataFinal.getMinutes();
 
-    if (inicio < 8 || fim > 18 || (fim === 18 && minutoFim > 0)) {
+    if (
+      inicio < 8 ||
+      inicio >= 18 ||
+      fim < 8 ||
+      fim > 18 ||
+      (fim === 18 && minutoFim > 0)
+    ) {
       throw new Error("A reserva só pode ser feita em horário comercial");
     }
 

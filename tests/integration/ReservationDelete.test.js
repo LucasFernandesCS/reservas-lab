@@ -20,16 +20,21 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
 
     test("Dada uma reserva faltando menos de 24 horas para o seu início, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const reservasExistentes = {
-        reservaId: 1,
         salaId: 1,
         usuario: "Diego",
-        dataInicio: new Date("2026-04-17T10:00:00").toISOString(),
-        dataFinal: new Date("2026-04-17T11:00:00").toISOString(),
+        dataInicio: new Date("2026-04-17T14:00:00").toISOString(),
+        dataFinal: new Date("2026-04-17T18:00:00").toISOString(),
       };
 
-      await request(app).post("/reservas").send(reservasExistentes);
+      const criacao = await request(app)
+        .post("/reservas")
+        .send(reservasExistentes);
+      expect(criacao.status).toBe(201);
+      const idRealDaReserva = criacao.body.reserva.reservaId;
 
-      const tentativaDeCancelar = await request(app).delete("/reservas/1");
+      const tentativaDeCancelar = await request(app).delete(
+        `/reservas/${idRealDaReserva}`,
+      );
 
       expect(tentativaDeCancelar.status).toBe(400);
       expect(tentativaDeCancelar.body.erro).toBe(
@@ -40,7 +45,6 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
   describe("Fluxo de execução principal", () => {
     test("Dada uma reserva existente, Quando o usuário tentar cancelar a reserva, Então o sistema deve permitir o cancelamento", async () => {
       const reservasExistentes = {
-        reservaId: 50,
         salaId: 1,
         usuario: "Diego",
         dataInicio: new Date("2030-01-07T10:00:00").toISOString(),

@@ -53,8 +53,8 @@ describe("ReservationService - Create", () => {
       const dadosDaReserva = {
         salaId: 1,
         usuario: "Beatriz",
-        dataInicio: new Date("2030-01-01T07:00:00"),
-        dataFinal: new Date("2030-01-01T09:00:00"),
+        dataInicio: new Date("2030-01-01T23:20:00"),
+        dataFinal: new Date("2030-01-02T00:30:00"),
       };
 
       const tentativaDeCriar = ReservationService.criarReserva(dadosDaReserva);

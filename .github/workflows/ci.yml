@@ -1,0 +1,49 @@
+name: CI - API de Reservas
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user_teste
+          POSTGRES_PASSWORD: senha_teste
+          POSTGRES_DB: banco_teste
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Sincronizar o schema do Prisma com o banco
+        env:
+          DATABASE_URL: "postgresql://user_teste:senha_teste@localhost:5432/banco_teste?schema=public"
+        run: npx prisma db push
+
+      - name: Executar os testes (Unitários e de Integração)
+        env:
+          DATABASE_URL: "postgresql://user_teste:senha_teste@localhost:5432/banco_teste?schema=public"
+        run: npm test

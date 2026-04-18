@@ -1,8 +1,16 @@
 const request = require("supertest");
 const app = require("../../src/server");
 const prisma = require("../../src/config/database");
+const jwt = require("jsonwebtoken");
 
 describe("Testes de Integração - Rotas de cancelamento", () => {
+  beforeAll(() => {
+    tokenVIP = jwt.sign(
+      { usuario: "testador", role: "admin" },
+      process.env.JWT_SECRET,
+    );
+  });
+
   beforeEach(async () => {
     await prisma.reserva.deleteMany();
   });
@@ -16,7 +24,9 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
   });
   describe("Tratamento de Erros e Exceções", () => {
     test("Dada uma reserva inexistente, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
-      const tentativaDeCancelar = await request(app).delete("/reservas/9999");
+      const tentativaDeCancelar = await request(app)
+        .delete("/reservas/9999")
+        .set("Authorization", `Bearer ${tokenVIP}`);
 
       expect(tentativaDeCancelar.status).toBe(400);
       expect(tentativaDeCancelar.body.erro).toBe("Reserva não encontrada");
@@ -44,14 +54,15 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
 
       expect(criacao.status).toBe(201);
       const idRealDaReserva = criacao.body.reserva.reservaId;
 
-      const tentativaDeCancelar = await request(app).delete(
-        `/reservas/${idRealDaReserva}`,
-      );
+      const tentativaDeCancelar = await request(app)
+        .delete(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`);
 
       expect(tentativaDeCancelar.status).toBe(400);
       expect(tentativaDeCancelar.body.erro).toBe(
@@ -72,14 +83,15 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
       const idRealDaReserva = criacao.body.reserva.reservaId;
 
-      const tentativaDeCancelar = await request(app).delete(
-        `/reservas/${idRealDaReserva}`,
-      );
+      const tentativaDeCancelar = await request(app)
+        .delete(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`);
 
       expect(tentativaDeCancelar.status).toBe(200);
       expect(tentativaDeCancelar.body.message).toBe(

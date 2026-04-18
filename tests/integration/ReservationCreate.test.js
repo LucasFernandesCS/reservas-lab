@@ -1,8 +1,16 @@
 const request = require("supertest");
 const app = require("../../src/server");
 const prisma = require("../../src/config/database");
+const jwt = require("jsonwebtoken");
 
 describe("Testes de Integração - Rotas de criação", () => {
+  beforeAll(() => {
+    tokenVIP = jwt.sign(
+      { usuario: "testador", role: "admin" },
+      process.env.JWT_SECRET,
+    );
+  });
+
   beforeEach(async () => {
     await prisma.reserva.deleteMany();
   });
@@ -22,6 +30,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(201);
@@ -43,6 +52,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -60,6 +70,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -77,6 +88,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -94,6 +106,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -111,6 +124,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -128,6 +142,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -146,7 +161,10 @@ describe("Testes de Integração - Rotas de criação", () => {
         dataFinal: new Date("2030-01-07T11:00:00").toISOString(),
       };
 
-      await request(app).post("/reservas").send(reservasExistentes);
+      await request(app)
+        .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
+        .send(reservasExistentes);
 
       const dadosDaReserva = {
         salaId: 1,
@@ -157,6 +175,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -174,6 +193,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(400);
@@ -194,6 +214,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(201);
@@ -221,6 +242,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const tentativaDeCriar = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosDaReserva);
 
       expect(tentativaDeCriar.status).toBe(201);

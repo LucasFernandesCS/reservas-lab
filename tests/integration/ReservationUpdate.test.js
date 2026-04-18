@@ -1,8 +1,16 @@
 const request = require("supertest");
 const app = require("../../src/server");
 const prisma = require("../../src/config/database");
+const jwt = require("jsonwebtoken");
 
 describe("Testes de Integração - Rotas de atualização", () => {
+  beforeAll(() => {
+    tokenVIP = jwt.sign(
+      { usuario: "testador", role: "admin" },
+      process.env.JWT_SECRET,
+    );
+  });
+
   beforeEach(async () => {
     await prisma.reserva.deleteMany();
   });
@@ -21,6 +29,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -33,6 +42,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -50,6 +60,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -62,6 +73,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -80,6 +92,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -92,6 +105,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -110,6 +124,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -122,6 +137,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -140,6 +156,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -152,6 +169,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -170,6 +188,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -182,6 +201,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -201,6 +221,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -213,6 +234,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -230,7 +252,10 @@ describe("Testes de Integração - Rotas de atualização", () => {
         dataInicio: new Date("2030-01-07T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T11:00:00").toISOString(),
       };
-      await request(app).post("/reservas").send(reservas1);
+      await request(app)
+        .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
+        .send(reservas1);
 
       const reservas2 = {
         salaId: 1,
@@ -241,6 +266,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacaoBeatriz = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservas2);
       expect(criacaoBeatriz.status).toBe(201);
 
@@ -253,6 +279,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idBeatriz}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosConflitantes);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -269,6 +296,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idInexistente}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosParaAtualizar);
 
       expect(tentativaDeAtualizar.status).toBe(400);
@@ -287,6 +315,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const criacao = await request(app)
         .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(reservasExistentes);
       expect(criacao.status).toBe(201);
 
@@ -296,6 +325,7 @@ describe("Testes de Integração - Rotas de atualização", () => {
 
       const tentativaDeAtualizar = await request(app)
         .put(`/reservas/${idRealDaReserva}`)
+        .set("Authorization", `Bearer ${tokenVIP}`)
         .send(dadosParaAtualizar);
 
       expect(tentativaDeAtualizar.status).toBe(200);

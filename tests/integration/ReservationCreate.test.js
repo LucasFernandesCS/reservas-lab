@@ -164,6 +164,23 @@ describe("Testes de Integração - Rotas de criação", () => {
         "A sala já está reservada neste horário",
       );
     });
+    test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      const dadosDaReserva = {
+        salaId: 1,
+        usuario: "Beatriz",
+        dataInicio: new Date("2030-01-07T10:30:00").toISOString(),
+        dataFinal: new Date("2030-01-07T10:30:00").toISOString(),
+      };
+
+      const tentativaDeCriar = await request(app)
+        .post("/reservas")
+        .send(dadosDaReserva);
+
+      expect(tentativaDeCriar.status).toBe(400);
+      expect(tentativaDeCriar.body.erro).toBe(
+        "A data e hora finais devem ser maiores que a data e hora de início",
+      );
+    });
   });
 
   describe("Testes de bordas", () => {

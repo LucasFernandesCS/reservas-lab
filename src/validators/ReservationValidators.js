@@ -100,6 +100,16 @@ const ReservationValidator = {
 
     return true;
   },
+
+  validarDatas: (reserva) => {
+    const tempoInicio = new Date(reserva.dataInicio).getTime();
+    const tempoFinal = new Date(reserva.dataFinal).getTime();
+    if (tempoFinal <= tempoInicio) {
+      throw new Error(
+        "A data e hora finais devem ser maiores que a data e hora de início",
+      );
+    }
+  },
 };
 
 module.exports = ReservationValidator;

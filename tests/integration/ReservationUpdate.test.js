@@ -189,6 +189,37 @@ describe("Testes de Integração - Rotas de atualização", () => {
         "A reserva não pode durar mais do que 4 horas",
       );
     });
+
+    test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      const reservasExistentes = {
+        reservaId: 1,
+        salaId: 1,
+        usuario: "Diego",
+        dataInicio: new Date("2030-01-07T10:00:00").toISOString(),
+        dataFinal: new Date("2030-01-07T11:00:00").toISOString(),
+      };
+
+      const criacao = await request(app)
+        .post("/reservas")
+        .send(reservasExistentes);
+      expect(criacao.status).toBe(201);
+
+      const idRealDaReserva = criacao.body.reserva.reservaId;
+
+      const dadosConflitantes = {
+        dataInicio: new Date("2030-01-01T10:00:00").toISOString(),
+        dataFinal: new Date("2030-01-01T10:00:00").toISOString(),
+      };
+
+      const tentativaDeAtualizar = await request(app)
+        .put(`/reservas/${idRealDaReserva}`)
+        .send(dadosConflitantes);
+
+      expect(tentativaDeAtualizar.status).toBe(400);
+      expect(tentativaDeAtualizar.body.erro).toBe(
+        "A data e hora finais devem ser maiores que a data e hora de início",
+      );
+    });
   });
 
   describe("Validação de conflitos", () => {

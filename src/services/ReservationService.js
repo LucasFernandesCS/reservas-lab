@@ -10,6 +10,7 @@ const ReservationService = {
     ReservationValidator.isHorarioComercial(dados);
     ReservationValidator.isDiaUtil(dados);
     ReservationValidator.isAlemDoTempoLimite(dados);
+    ReservationValidator.validarDatas(dados);
     ReservationValidator.validarConflito(reservasAtuais, dados);
 
     const reserva = await ReservationModel.criarReserva(dados);
@@ -45,6 +46,7 @@ const ReservationService = {
     ReservationValidator.isHorarioComercial(reservaParaValidar);
     ReservationValidator.isDiaUtil(reservaParaValidar);
     ReservationValidator.isAlemDoTempoLimite(reservaParaValidar);
+    ReservationValidator.validarDatas(reservaParaValidar);
     ReservationValidator.validarConflito(reservasAtuais, reservaParaValidar);
 
     const reservaAtualizada = await ReservationModel.atualizarReservas(

@@ -35,13 +35,15 @@ describe("ReservationService - Delete", () => {
     });
 
     test("Dada uma reserva faltando menos de 24 horas para o seu início, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      jest.useFakeTimers().setSystemTime(new Date("2030-01-07T08:00:00"));
+
       const reservasExistentes = [
         {
           reservaId: 1,
           salaId: 1,
           usuario: "Diego",
-          dataInicio: new Date("2026-04-15T10:00:00"),
-          dataFinal: new Date("2026-04-15T11:00:00"),
+          dataInicio: new Date("2030-01-07T14:00:00"),
+          dataFinal: new Date("2030-01-07T18:00:00"),
         },
       ];
 
@@ -52,6 +54,8 @@ describe("ReservationService - Delete", () => {
       await expect(tentativaDeCancelar).rejects.toThrow(
         "Só é permitido cancelar com pelo menos 24 horas de antecedência",
       );
+
+      jest.useRealTimers();
     });
   });
   describe("Fluxo de execução principal", () => {

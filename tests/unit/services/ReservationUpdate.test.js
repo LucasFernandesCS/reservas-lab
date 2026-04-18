@@ -182,6 +182,33 @@ describe("ReservationService - Update", () => {
         "A reserva não pode durar mais do que 4 horas",
       );
     });
+    test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      const reservasExistentes = [
+        {
+          reservaId: 1,
+          salaId: 1,
+          usuario: "Diego",
+          dataInicio: new Date("2030-01-07T10:00:00"),
+          dataFinal: new Date("2030-01-07T11:00:00"),
+        },
+      ];
+
+      ReservationModel.listarReservas.mockResolvedValue(reservasExistentes);
+
+      const dadosConflitantes = {
+        dataInicio: new Date("2030-01-01T10:00:00"),
+        dataFinal: new Date("2030-01-01T10:00:00"),
+      };
+
+      const tentativaDeAtualizar = ReservationService.atualizarReservas(
+        1,
+        dadosConflitantes,
+      );
+
+      await expect(tentativaDeAtualizar).rejects.toThrow(
+        "A data e hora finais devem ser maiores que a data e hora de início",
+      );
+    });
   });
 
   describe("Validação de conflitos", () => {

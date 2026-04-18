@@ -105,6 +105,20 @@ describe("ReservationService - Create", () => {
         "A reserva não pode durar mais do que 4 horas",
       );
     });
+    test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
+      const dadosDaReserva = {
+        salaId: 1,
+        usuario: "Lucas",
+        dataInicio: new Date("2030-01-01T10:00:00"),
+        dataFinal: new Date("2030-01-01T10:00:00"),
+      };
+
+      const tentativaDeCriar = ReservationService.criarReserva(dadosDaReserva);
+
+      await expect(tentativaDeCriar).rejects.toThrow(
+        "A data e hora finais devem ser maiores que a data e hora de início",
+      );
+    });
   });
 
   describe("Validação de conflitos", () => {

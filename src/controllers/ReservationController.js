@@ -42,11 +42,22 @@ const ReservationController = {
     }
   },
 
-  deletar: async (req, res) => {
+  cancelar: async (req, res) => {
     try {
       const reservaId = Number(req.params.id);
 
       const resultado = await ReservationService.cancelarReserva(reservaId);
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(400).json({ erro: error.message });
+    }
+  },
+
+  deletar: async (req, res) => {
+    try {
+      const reservaId = Number(req.params.id);
+
+      const resultado = await ReservationService.deletarReserva(reservaId);
       res.status(200).json(resultado);
     } catch (error) {
       res.status(400).json({ erro: error.message });

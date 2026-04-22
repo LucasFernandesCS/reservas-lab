@@ -65,10 +65,22 @@ const ReservationService = {
     const reserva = ReservationValidator.validarExistencia(id, reservasAtuais);
     ReservationValidator.validarPrazoCancelamento(reserva);
 
-    await ReservationModel.deletar(id);
+    await ReservationModel.cancelarReserva(id);
 
     return {
       message: "Reserva cancelada com sucesso!",
+    };
+  },
+
+  deletarReserva: async (id) => {
+    const reservasAtuais = await ReservationModel.listarReservas();
+
+    const reserva = ReservationValidator.validarExistencia(id, reservasAtuais);
+
+    await ReservationModel.deletar(id);
+
+    return {
+      message: "Reserva deletada com sucesso!",
     };
   },
 };

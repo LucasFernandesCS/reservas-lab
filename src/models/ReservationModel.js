@@ -6,7 +6,18 @@ const ReservationModel = {
   },
 
   listarReservas: async () => {
-    return await prisma.reserva.findMany();
+    return await prisma.reserva.findMany({
+      where: {
+        status: "ATIVA",
+      },
+      select: {
+        reservaId: true,
+        salaId: true,
+        dataInicio: true,
+        dataFinal: true,
+        status: true,
+      },
+    });
   },
 
   atualizarReservas: async (id, dados) => {
@@ -20,6 +31,17 @@ const ReservationModel = {
     const reserva = await prisma.reserva.delete({ where: { reservaId: id } });
 
     return true;
+  },
+
+  cancelarReserva: async (id) => {
+    return await prisma.reserva.update({
+      where: {
+        reservaId: Number(id),
+      },
+      data: {
+        status: "CANCELADA",
+      },
+    });
   },
 };
 

@@ -16,6 +16,7 @@ const ReservationModel = {
         dataInicio: true,
         dataFinal: true,
         status: true,
+        usuarioId: true,
       },
     });
   },

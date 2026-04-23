@@ -23,6 +23,8 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://admin:adminpassword@postgres:5432/reservas_node
+      - JWT_SECRET=sua_chave_secreta_aqui
+      - JWT_REFRESH_SECRET=outra_chave_secreta_aqui
     depends_on:
       postgres:
         condition: service_healthy

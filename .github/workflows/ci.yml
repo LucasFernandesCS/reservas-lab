@@ -50,4 +50,5 @@ jobs:
         env:
           DATABASE_URL: "postgresql://user_teste:senha_teste@localhost:5432/banco_teste?schema=public"
           JWT_SECRET: "a613354705aabec2da5041d76eca55352b0f4fae6f8afc368d37a0cd63a31e3d"
+          JWT_REFRESH_SECRET: "refresh_secret_teste_ci_123" # <--- ADICIONADO
         run: npm test

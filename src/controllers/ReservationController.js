@@ -3,8 +3,11 @@ const ReservationService = require("../services/ReservationService");
 const ReservationController = {
   criar: async (req, res) => {
     try {
+      const usuarioId = req.usuarioLogado.id;
+
       const dadosRecebidos = {
         ...req.body,
+        usuarioId: usuarioId,
         dataInicio: new Date(req.body.dataInicio),
         dataFinal: new Date(req.body.dataFinal),
       };
@@ -30,7 +33,12 @@ const ReservationController = {
   atualizar: async (req, res) => {
     try {
       const reservaId = Number(req.params.id);
-      const dadosRecebidos = req.body;
+      const usuarioId = req.usuarioLogado.id;
+
+      const dadosRecebidos = {
+        ...req.body,
+        usuarioId: usuarioId,
+      };
 
       const resultado = await ReservationService.atualizarReservas(
         reservaId,

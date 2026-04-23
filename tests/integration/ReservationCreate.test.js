@@ -4,7 +4,21 @@ const prisma = require("../../src/config/database");
 const jwt = require("jsonwebtoken");
 
 describe("Testes de Integração - Rotas de criação", () => {
-  beforeAll(() => {
+  let tokenVIP;
+  let usuarioTeste;
+
+  beforeAll(async () => {
+    await prisma.reserva.deleteMany();
+    await prisma.usuario.deleteMany();
+
+    usuarioTeste = await prisma.usuario.create({
+      data: {
+        name: "Testador Create",
+        email: "create@teste.com",
+        password: "hashqualquer",
+      },
+    });
+
     tokenVIP = jwt.sign(
       { usuario: "testador", role: "admin" },
       process.env.JWT_SECRET,
@@ -16,6 +30,8 @@ describe("Testes de Integração - Rotas de criação", () => {
   });
 
   afterAll(async () => {
+    await prisma.reserva.deleteMany();
+    await prisma.usuario.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -23,7 +39,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("POST /reservas - Dado uma requisição valida, Quando o usuário tentar criar a reserva, Então o sistema deve permitir a criação", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-05-10T10:00:00").toISOString(),
         dataFinal: new Date("2030-05-10T12:00:00").toISOString(),
       };
@@ -45,7 +61,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dada uma data de início que já passou, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2020-01-01T10:00:00").toISOString(),
         dataFinal: new Date("2020-01-01T12:00:00").toISOString(),
       };
@@ -63,7 +79,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dada uma data final anterior a data de início, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-01T12:00:00").toISOString(),
         dataFinal: new Date("2030-01-01T10:00:00").toISOString(),
       };
@@ -81,7 +97,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dado um horário fora do horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-01T07:00:00").toISOString(),
         dataFinal: new Date("2030-01-01T09:00:00").toISOString(),
       };
@@ -99,7 +115,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dado um horário final de reserva ser imediatamente após o final do horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-01T16:00:00").toISOString(),
         dataFinal: new Date("2030-01-01T18:01:00").toISOString(),
       };
@@ -117,7 +133,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dado um dia não útil, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-05T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-05T12:00:00").toISOString(),
       };
@@ -135,7 +151,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dado um horário de reserva que ultrapasse o limite de 4 horas de uso, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Gabriel Nobrega",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-01T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-01T15:00:00").toISOString(),
       };
@@ -156,7 +172,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dado um horário de reserva que já está ocupado, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const reservasExistentes = {
         salaId: 1,
-        usuario: "Diego",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T11:00:00").toISOString(),
       };
@@ -168,7 +184,7 @@ describe("Testes de Integração - Rotas de criação", () => {
 
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T10:30:00").toISOString(),
         dataFinal: new Date("2030-01-07T12:30:00").toISOString(),
       };
@@ -186,7 +202,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T10:30:00").toISOString(),
         dataFinal: new Date("2030-01-07T10:30:00").toISOString(),
       };
@@ -207,7 +223,7 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dada uma reserva que acabe junto com o horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve permitir a criação", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T17:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T18:00:00").toISOString(),
       };
@@ -226,16 +242,19 @@ describe("Testes de Integração - Rotas de criação", () => {
     test("Dada uma reserva que inicie imediatamente após o final de outra reserva, Quando o usuário tentar criar a reserva, Então o sistema deve permitir a criação", async () => {
       const reservasExistentes = {
         salaId: 1,
-        usuario: "Diego",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T12:00:00").toISOString(),
       };
 
-      await request(app).post("/reservas").send(reservasExistentes);
+      await request(app)
+        .post("/reservas")
+        .set("Authorization", `Bearer ${tokenVIP}`)
+        .send(reservasExistentes);
 
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T12:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T14:00:00").toISOString(),
       };

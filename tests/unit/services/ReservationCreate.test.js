@@ -24,7 +24,7 @@ describe("ReservationService - Create", () => {
     test("Dada uma data de início que já passou, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2020-01-01T10:00:00"),
         dataFinal: new Date("2020-01-01T12:00:00"),
       };
@@ -38,7 +38,7 @@ describe("ReservationService - Create", () => {
     test("Dada uma data final anterior a data de início, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-01T12:00:00"),
         dataFinal: new Date("2030-01-01T10:00:00"),
       };
@@ -52,7 +52,7 @@ describe("ReservationService - Create", () => {
     test("Dado um horário fora do horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-01T23:20:00"),
         dataFinal: new Date("2030-01-02T00:30:00"),
       };
@@ -66,7 +66,7 @@ describe("ReservationService - Create", () => {
     test("Dado um horário final de reserva ser imediatamente após o final do horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-01T16:00:00"),
         dataFinal: new Date("2030-01-01T18:01:00"),
       };
@@ -80,7 +80,7 @@ describe("ReservationService - Create", () => {
     test("Dado um dia não útil, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-05T10:00:00"),
         dataFinal: new Date("2030-01-05T12:00:00"),
       };
@@ -94,7 +94,7 @@ describe("ReservationService - Create", () => {
     test("Dado um horário de reserva que ultrapasse o limite de 4 horas de uso, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-01T10:00:00"),
         dataFinal: new Date("2030-01-01T15:00:00"),
       };
@@ -108,7 +108,7 @@ describe("ReservationService - Create", () => {
     test("Dada uma reserva com a data de fim igual a data de inicio, Quando o usuário tentar criar a reserva, Então o sistema deve lançar uma exceção", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Lucas",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-01T10:00:00"),
         dataFinal: new Date("2030-01-01T10:00:00"),
       };
@@ -127,7 +127,7 @@ describe("ReservationService - Create", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -137,7 +137,7 @@ describe("ReservationService - Create", () => {
 
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-07T10:30:00"),
         dataFinal: new Date("2030-01-07T12:30:00"),
       };
@@ -154,7 +154,7 @@ describe("ReservationService - Create", () => {
     test("Dada uma reserva que acabe junto com o horário comercial, Quando o usuário tentar criar a reserva, Então o sistema deve permitir a criação", async () => {
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-07T17:00:00"),
         dataFinal: new Date("2030-01-07T18:00:00"),
       };
@@ -169,7 +169,7 @@ describe("ReservationService - Create", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T12:00:00"),
         },
@@ -179,7 +179,7 @@ describe("ReservationService - Create", () => {
 
       const dadosDaReserva = {
         salaId: 1,
-        usuario: "Beatriz",
+        usuarioId: 1,
         dataInicio: new Date("2030-01-07T12:00:00"),
         dataFinal: new Date("2030-01-07T14:00:00"),
       };

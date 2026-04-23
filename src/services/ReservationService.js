@@ -77,7 +77,7 @@ const ReservationService = {
 
     const reserva = ReservationValidator.validarExistencia(id, reservasAtuais);
 
-    await ReservationModel.deletar(id);
+    await ReservationModel.deletarReserva(id);
 
     return {
       message: "Reserva deletada com sucesso!",

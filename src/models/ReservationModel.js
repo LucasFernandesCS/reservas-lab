@@ -27,7 +27,7 @@ const ReservationModel = {
     });
   },
 
-  deletar: async (id) => {
+  deletarReserva: async (id) => {
     const reserva = await prisma.reserva.delete({ where: { reservaId: id } });
 
     return true;

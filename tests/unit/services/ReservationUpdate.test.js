@@ -26,7 +26,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -53,7 +53,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -80,7 +80,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -107,7 +107,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -133,7 +133,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -160,7 +160,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -187,7 +187,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
@@ -217,14 +217,14 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
         {
           reservaId: 2,
           salaId: 1,
-          usuario: "Beatriz",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:30:00"),
           dataFinal: new Date("2030-01-07T12:30:00"),
         },
@@ -272,7 +272,7 @@ describe("ReservationService - Update", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },

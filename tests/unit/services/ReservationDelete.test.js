@@ -11,10 +11,11 @@ jest.mock("@prisma/client", () => {
     })),
   };
 });
+
 const ReservationModel = require("../../../src/models/ReservationModel");
 const ReservationService = require("../../../src/services/ReservationService");
 
-describe("ReservationService - Delete", () => {
+describe("ReservationService - Cancelar", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     ReservationModel.listarReservas.mockResolvedValue([]);
@@ -41,7 +42,7 @@ describe("ReservationService - Delete", () => {
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T14:00:00"),
           dataFinal: new Date("2030-01-07T18:00:00"),
         },
@@ -58,36 +59,39 @@ describe("ReservationService - Delete", () => {
       jest.useRealTimers();
     });
   });
+
   describe("Fluxo de execução principal", () => {
     test("Dada uma reserva existente, Quando o usuário tentar cancelar a reserva, Então o sistema deve permitir o cancelamento", async () => {
       const reservasExistentes = [
         {
           reservaId: 1,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-07T10:00:00"),
           dataFinal: new Date("2030-01-07T11:00:00"),
         },
         {
           reservaId: 2,
           salaId: 1,
-          usuario: "Diego",
+          usuarioId: 1,
           dataInicio: new Date("2030-01-08T10:00:00"),
           dataFinal: new Date("2030-01-08T11:00:00"),
         },
       ];
 
-      idParaDeletar = 2;
+      const idParaCancelar = 2;
 
       ReservationModel.listarReservas.mockResolvedValue(reservasExistentes);
 
       const tentativaDeCancelar =
-        await ReservationService.cancelarReserva(idParaDeletar);
+        await ReservationService.cancelarReserva(idParaCancelar);
 
       expect(tentativaDeCancelar.message).toBe(
         "Reserva cancelada com sucesso!",
       );
-      expect(ReservationModel.deletar).toHaveBeenCalledWith(idParaDeletar);
+      expect(ReservationModel.cancelarReserva).toHaveBeenCalledWith(
+        idParaCancelar,
+      );
     });
   });
 });

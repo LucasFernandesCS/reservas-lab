@@ -20,7 +20,7 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
     });
 
     tokenVIP = jwt.sign(
-      { usuario: "testador", role: "admin" },
+      { id: usuarioTeste.id, email: usuarioTeste.email, role: "admin" },
       process.env.JWT_SECRET,
     );
   });
@@ -45,8 +45,8 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
         .patch("/reservas/9999")
         .set("Authorization", `Bearer ${tokenVIP}`);
 
-      expect(tentativaDeCancelar.status).toBe(400);
-      expect(tentativaDeCancelar.body.erro).toBe("Reserva não encontrada");
+      expect(tentativaDeCancelar.status).toBe(404);
+      expect(tentativaDeCancelar.body.erro).toBe("Reserva não encontrada.");
     });
 
     test("Dada uma reserva faltando menos de 24 horas para o seu início, Quando o usuário tentar cancelar a reserva, Então o sistema deve lançar uma exceção", async () => {
@@ -64,7 +64,6 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
 
       const reservasExistentes = {
         salaId: 1,
-        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T14:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T18:00:00").toISOString(),
       };
@@ -94,7 +93,6 @@ describe("Testes de Integração - Rotas de cancelamento", () => {
     test("Dada uma reserva existente, Quando o usuário tentar cancelar a reserva, Então o sistema deve permitir o cancelamento", async () => {
       const reservasExistentes = {
         salaId: 1,
-        usuarioId: usuarioTeste.id,
         dataInicio: new Date("2030-01-07T10:00:00").toISOString(),
         dataFinal: new Date("2030-01-07T11:00:00").toISOString(),
       };

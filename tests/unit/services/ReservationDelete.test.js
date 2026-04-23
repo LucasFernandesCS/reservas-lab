@@ -1,16 +1,4 @@
 jest.mock("../../../src/models/ReservationModel");
-jest.mock("@prisma/client", () => {
-  return {
-    PrismaClient: jest.fn().mockImplementation(() => ({
-      reserva: {
-        create: jest.fn(),
-        findMany: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-    })),
-  };
-});
 
 const ReservationModel = require("../../../src/models/ReservationModel");
 const ReservationService = require("../../../src/services/ReservationService");

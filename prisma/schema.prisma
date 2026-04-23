@@ -17,8 +17,11 @@ model Usuario {
   email     String @unique
   password  String
   createdAt DateTime @default(now())
+  refreshToken  String?
 
   reservas Reserva[]
+
+  @@map("usuarios")
 }
 
 model Reserva {

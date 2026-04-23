@@ -1,21 +1,44 @@
-const jwt = require("jsonwebtoken");
+const AuthService = require("../services/AuthService");
 
-module.exports = {
-  login: (req, res) => {
-    const { usuario, senha } = req.body;
+const AuthController = {
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
 
-    if (usuario === "admin" && senha === "admin123") {
-      const token = jwt.sign(
-        { usuario: "admin", role: "administrador" },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" },
-      );
+      const tokens = await AuthService.login({ email, password });
+
       return res.status(200).json({
         mensagem: "Login bem-sucedido!",
-        token: token,
+        ...tokens,
       });
-    }
+    } catch (error) {
+      if (error.message === "Credenciais inválidas") {
+        return res.status(401).json({ erro: error.message });
+      }
 
-    return res.status(401).json({ erro: "Credenciais inválidas" });
+      console.error(error);
+      return res.status(500).json({ erro: "Erro interno no servidor." });
+    }
+  },
+
+  refresh: async (req, res) => {
+    try {
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(401).json({ erro: "Refresh Token é obrigatório." });
+      }
+
+      const novosTokens = await AuthService.refresh(refreshToken);
+
+      return res.status(200).json({
+        mensagem: "Tokens renovados!",
+        ...novosTokens,
+      });
+    } catch (error) {
+      return res.status(401).json({ erro: error.message });
+    }
   },
 };
+
+module.exports = AuthController;
